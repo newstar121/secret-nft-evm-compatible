@@ -104,12 +104,11 @@ const ReadPage = () => {
   useEffect(() => {
     if (wallet && secretClient) {
       getOwnedNFTs();
-      getOwnedEthereumNFTs();
       // if( !metamaskWallet ){
       //   setEtherNftList([]);
       // }
     } else if(metamaskWallet && ethereumClient){
-      // getOwnedEthereumNFTs();
+      getOwnedEthereumNFTs();
       // if( !wallet ){
       //   setNftList([]);
       // }
