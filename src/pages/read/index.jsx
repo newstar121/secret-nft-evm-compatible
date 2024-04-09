@@ -15,7 +15,7 @@ import myContract from '../../ethercontract';
 // let provider = window.ethereum;
 // const web3 = new Web3(provider);
 // const accounts = await web3.eth.getAccounts();
-let tokenId = 9;
+let tokenId = 25;
 
 const ReadPage = () => {
 

@@ -8,7 +8,7 @@ var crypto = require('crypto');
 // Middleware to parse request body
 app.use(express.json());
 // Enable All CORS Requests
-app.use(cors());
+app.use(cors({}));
 
 // Encryption
 const algorithm = 'aes-256-cbc';
