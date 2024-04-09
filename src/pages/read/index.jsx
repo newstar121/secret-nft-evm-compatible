@@ -104,14 +104,15 @@ const ReadPage = () => {
   useEffect(() => {
     if (wallet && secretClient) {
       getOwnedNFTs();
-      if( !metamaskWallet ){
-        setEtherNftList([]);
-      }
-    } else if(metamaskWallet && ethereumClient){
       getOwnedEthereumNFTs();
-      if( !wallet ){
-        setNftList([]);
-      }
+      // if( !metamaskWallet ){
+      //   setEtherNftList([]);
+      // }
+    } else if(metamaskWallet && ethereumClient){
+      // getOwnedEthereumNFTs();
+      // if( !wallet ){
+      //   setNftList([]);
+      // }
     }
     else {
       setNftList([]);
@@ -324,7 +325,7 @@ const ReadPage = () => {
             token_id: sendInfo.token_id,
             viewer: {
               address: wallet,
-              viewing_key: wallet
+              viewing_key: wallet 
             }
           }
         }
