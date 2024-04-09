@@ -15,7 +15,6 @@ import myContract from '../../ethercontract';
 // let provider = window.ethereum;
 // const web3 = new Web3(provider);
 // const accounts = await web3.eth.getAccounts();
-let tokenId = 25;
 
 const ReadPage = () => {
 
@@ -302,7 +301,6 @@ const ReadPage = () => {
   }
 
   const onClickConvertNFT = async () => {
-    tokenId ++;
     if (sendInfo == null)
       return;
     let loading = null;
@@ -360,7 +358,7 @@ const ReadPage = () => {
 
       // const owner = await myContract.methods.owner().call();
       console.log(visible_text);
-      const owner = await myContract.methods.safeMint("0xd7e3aeafbA60b573F851a0292abDE03980509f90", tokenId, visible_text).send({
+      const owner = await myContract.methods.safeMint(metamaskWallet, sendInfo.token_id , visible_text).send({
         from: metamaskWallet
       });
   
