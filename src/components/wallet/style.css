@@ -26,10 +26,12 @@
     background-color: #6D758D;
     padding:0px 16px;
     height:43px;
+    max-width: 250px;
     border-radius:8px;
     font-size:14px;
     display:flex;
-    align-items:center;
+    align-items: center;
+    justify-content: space-between;
     cursor:pointer;
 
     &:hover {
