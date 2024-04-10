@@ -9,7 +9,7 @@ import { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faCircleNotch, faWarning } from "@fortawesome/free-solid-svg-icons"
 import axios from 'axios';
-import myContract from '../../ethercontract';
+import myContract, { address } from '../../ethercontract';
 // import Web3 from 'web3';  
 
 // let provider = window.ethereum;
@@ -66,6 +66,35 @@ const ReadPage = () => {
       toast.error(e.message);
       console.log('error >>>', e);
     }
+    try {
+      if( metamaskWallet ){
+        const totalNFTs = await myContract.methods.balanceOf(metamaskWallet).call();
+        console.log(totalNFTs);
+        const parsedTotalNFTs = Number(totalNFTs);
+        
+        let i = 0 , temp_toke_id = 0, temp_token_uri, visible_text = "";
+        const ether_nfts = [];
+        while (i < parsedTotalNFTs) {
+          temp_toke_id = await myContract.methods.tokenOfOwnerByIndex(metamaskWallet, i).call();
+          temp_token_uri = await myContract.methods.tokenURI(temp_toke_id).call();
+          visible_text =  temp_token_uri.split("####")[0];  
+          temp_token_uri =  temp_token_uri.split("####")[1];
+  
+          const response = await axios.post('https://app.goldstar.icu/sendFromEvm', { temp_token_uri });      
+          if( response && response.data && response.data.decryptedText ){
+            temp_token_uri = response.data.decryptedText;
+          }
+  
+          ether_nfts.push({"token_id" : Number(temp_toke_id), "token_uri" : visible_text, "hidden_text" : temp_token_uri});
+          i += 1;
+        }
+        console.log(ether_nfts);
+        setEtherNftList(ether_nfts);
+      }
+    } catch (e) {
+      toast.error(e.message);
+      console.log('error >>>', e);
+    }
     setLoading(false);
   }
 
@@ -101,14 +130,21 @@ const ReadPage = () => {
     setLoading(false);
   }
 
+  
   useEffect(() => {
-    if (wallet && secretClient) {
+    if ( !ether_nfts && !nftList) {
       getOwnedNFTs();
+    }
+  }, []);
+
+  useEffect(() => {
+    if (wallet && secretClient && metamaskWallet && ethereumClient) {
+      getOwnedNFTs();
+      // getOwnedEthereumNFTs();
       // if( !metamaskWallet ){
       //   setEtherNftList([]);
       // }
-    } else if(metamaskWallet && ethereumClient){
-      getOwnedEthereumNFTs();
+    // } else if(metamaskWallet && ethereumClient){
       // if( !wallet ){
       //   setNftList([]);
       // }
@@ -189,11 +225,12 @@ const ReadPage = () => {
     }
   }
 
-  const onClickSend = (token_id) => {
+  const onClickSend = (token_id, isEvm) => {
     setSendInfo({
       token_id: token_id,
       recipient: '',
       type: 'send',
+      isEvm: isEvm,
     });
   }
 
@@ -206,6 +243,11 @@ const ReadPage = () => {
       visible_text: visible_text,
       hidden_text: hidden_text,
     });
+  }
+
+  const returnToList = () => {
+    setSendInfo(null);
+    getOwnedNFTs();
   }
 
   const onClickSendNFT = async () => {
@@ -245,6 +287,30 @@ const ReadPage = () => {
       console.log(e);
     }
   }
+
+  
+  const onClickSendNFTBSC = async () => {
+    if (sendInfo == null || sendInfo.recipient === '')
+      return;
+    let loading = null;
+    try {
+      loading = toast.loading("Sending...");
+      const result = await myContract.methods.transferFrom(metamaskWallet,sendInfo.recipient,sendInfo.token_id).send({
+        from: metamaskWallet
+      });
+      toast.dismiss(loading)
+      toast.success("Sent successfully")
+      let cloneList = JSON.parse(JSON.stringify(ether_nfts));
+      cloneList = cloneList.filter((nft) => nft.token_id != sendInfo.token_id);
+      setEtherNftList(cloneList);
+      setSendInfo(null);
+    } catch (e) {
+      if (loading)
+        toast.dismiss(loading)
+      toast.error(e.message);
+      console.log(e);
+    }
+  }
   
   const onClickConvertNFTToSecret = async () => {
     if (sendInfo == null)
@@ -268,6 +334,7 @@ const ReadPage = () => {
         code_hash: CODE_HASH, // optional but way faster
         msg: {
           mint_nft: {
+            token_id : sendInfo.token_id,
             owner: wallet,
             public_metadata: publicMetadata,
             private_metadata: privateMetadata,
@@ -375,7 +442,7 @@ const ReadPage = () => {
       console.log('tx >>> ', tx);
       let cloneList = JSON.parse(JSON.stringify(nftList));
       cloneList = cloneList.filter((nft) => nft.token_id != sendInfo.token_id);
-      getOwnedEthereumNFTs();
+      getOwnedNFTs();
       setNftList(cloneList);
       setSendInfo(null);
     } catch (e) {
@@ -407,7 +474,7 @@ const ReadPage = () => {
         <div className="flex flex-row items-center gap-2 ml-5 w-fit">
           {/* <input className="p-1 text-lg text-black border-2 border-solid rounded-md color-primary min-w-96 border-primary" value={sendAddress} onChange={(e) => setSendAddress(e.target.value)}></input> */}
           <div className="w-[117px]"></div>
-          <p className="text-xl font-semibold underline cursor-pointer" onClick={() => onClickSend(nft.token_id)}>Send</p>
+          <p className="text-xl font-semibold underline cursor-pointer" onClick={() => onClickSend(nft.token_id, true)}>Send</p>
           <p className="text-xl font-semibold underline cursor-pointer" onClick={() => onClickConvert(nft.token_id, true)}>Convert to EVM</p>
         </div>
       </div>
@@ -429,7 +496,7 @@ const ReadPage = () => {
         <div className="flex flex-row items-center gap-2 ml-5 w-fit">
           {/* <input className="p-1 text-lg text-black border-2 border-solid rounded-md color-primary min-w-96 border-primary" value={sendAddress} onChange={(e) => setSendAddress(e.target.value)}></input> */}
           <div className="w-[117px]"></div>
-          <p className="text-xl font-semibold underline cursor-pointer" onClick={() => onClickSend(nft.token_id)}>Send</p>
+          <p className="text-xl font-semibold underline cursor-pointer" onClick={() => onClickSend(nft.token_id, false)}>Send</p>
           <p className="text-xl font-semibold underline cursor-pointer" onClick={() => onClickConvert(nft.token_id, false, nft.token_uri, nft.hidden_text)}>Convert to Secret</p>
         </div>
       </div>
@@ -442,7 +509,8 @@ const ReadPage = () => {
         <>
           <p className="text-2xl font-semibold">Contract</p>
           <Link to={`https://testnet.ping.pub/secret/account/${CONTRACT_ADDRESS}`} target={'_blank'} className="text-xl font-semibold underline">{CONTRACT_ADDRESS}</Link>
-
+          <p className="text-2xl font-semibold">BSC Contract</p>
+          <Link to={`https://testnet.bscscan.com/address/${address}`} target={'_blank'} className="text-xl font-semibold underline">{address}</Link>
           {(wallet == null || secretClient == null) && (
             <p className="mt-40 text-4xl font-semibold">Please connect Keplr wallet</p>
           )}
@@ -473,15 +541,17 @@ const ReadPage = () => {
             </div>
           )
           }
-          {(sendInfo.type !== null && sendInfo.type == "send") && (
-            <button className="px-20 SendButton" onClick={onClickSendNFT}>Send</button>
-          ) || ((sendInfo.isEvm !== null && sendInfo.isEvm == true) && ( 
+          {(sendInfo.type !== null && sendInfo.type == "send") && ((sendInfo.isEvm) && (
+            <button className="px-20 SendButton" onClick={onClickSendNFT}>Send</button>	
+          ) || (
+            <button className="px-20 SendButton" onClick={onClickSendNFTBSC}>Send</button>	
+          )) || ((sendInfo.isEvm !== null && sendInfo.isEvm == true) && ( 
             <button className="px-20 SendButton" onClick={onClickConvertNFT}>Convert to EVM</button>
           ) || ( 
             <button className="px-20 SendButton" onClick={onClickConvertNFTToSecret}>Convert to Secret</button>
           ))
           }          
-          <p className="mt-3 text-xl font-semibold underline cursor-pointer" onClick={() => setSendInfo(null)}>Return to NFT List</p>
+          <p className="mt-3 text-xl font-semibold underline cursor-pointer" onClick={() => returnToList()}>Return to NFT List</p>
         </>
       )}
 
