@@ -533,7 +533,8 @@ const ReadPage = () => {
         <>
           <p className="text-2xl font-semibold">Contract</p>
           <Link to={`https://testnet.ping.pub/secret/account/${CONTRACT_ADDRESS}`} target={'_blank'} className="text-xl font-semibold underline">{CONTRACT_ADDRESS}</Link>
-
+          <p className="text-2xl font-semibold">BSC Contract</p>
+          <Link to={`https://testnet.bscscan.com/address/${address}`} target={'_blank'} className="text-xl font-semibold underline">{address}</Link>
           {(sendInfo.type !== null && sendInfo.type == "send") && (
             <div className="flex flex-col gap-1 mt-3">
               <p className="text-lg">Recipient Address:</p>
