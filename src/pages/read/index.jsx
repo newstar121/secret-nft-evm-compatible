@@ -206,10 +206,11 @@ const ReadPage = () => {
         setNftList(cloneList);
       }
       else {
-        toast.dismiss(loading)
+        loading = toast.loading("Burning...");
         const result = await myContract.methods.burn(token_id).send({
           from: metamaskWallet
         });
+        toast.dismiss(loading)
         toast.success("Burned successfully")
         setBurnResult({
           token_id: token_id,
