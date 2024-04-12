@@ -36,15 +36,15 @@ const NavBar = () => {
   }, [wallet, secretClient, metamaskWallet, ethereumClient])
 
   useEffect(() => {
-    const lastConnectedWallet = localStorage.getItem('lastConnectedWallet');
-    console.log(lastConnectedWallet);
-    if (lastConnectedWallet != null && lastConnectedWallet != undefined && lastConnectedWallet != '')
-      connectWallet(lastConnectedWallet);
+    // const lastConnectedWallet = localStorage.getItem('lastConnectedWallet');
+    // console.log(lastConnectedWallet);
+    // if (lastConnectedWallet != null && lastConnectedWallet != undefined && lastConnectedWallet != '')
+    //   connectWallet(lastConnectedWallet);
 
-    const lastConnectedMetamaskWallet = localStorage.getItem('lastConnectedMetamaskWallet');
-    console.log(lastConnectedMetamaskWallet);
-    if (lastConnectedMetamaskWallet != null && lastConnectedMetamaskWallet != undefined && lastConnectedMetamaskWallet != '')
-      connectMetamaskWallet(lastConnectedMetamaskWallet);
+    // const lastConnectedMetamaskWallet = localStorage.getItem('lastConnectedMetamaskWallet');
+    // console.log(lastConnectedMetamaskWallet);
+    // if (lastConnectedMetamaskWallet != null && lastConnectedMetamaskWallet != undefined && lastConnectedMetamaskWallet != '')
+    //   connectMetamaskWallet(lastConnectedMetamaskWallet);
   }, []);
 
   const refreshBalance = async () => {
@@ -54,6 +54,7 @@ const NavBar = () => {
         address: wallet,
         denom: "uscrt",
       });
+      // if(balance.amount == 0) refreshBalance();
       setBalance(parseUcrt(balance.amount));
     }
 
@@ -81,7 +82,7 @@ const NavBar = () => {
       </div>
       <div className="relative right-0 flex flex-col justify-end w-1/3 gap-6">
         {wallet == null && (
-          <button className="WalletConnectButton" onClick={openWalletConnect}>Connect Keplr Wallet</button>
+          <button className="WalletConnectButton justify-center" onClick={openWalletConnect}>Connect Keplr Wallet</button>
         )}
         {wallet != null && (
           <Wallet
@@ -94,7 +95,7 @@ const NavBar = () => {
           </Wallet>
         )}
         {metamaskWallet == null && (
-          <button className="WalletConnectButton" onClick={openMetamaskWalletConnect}>Connect Metamask Wallet</button>
+          <button className="WalletConnectButton justify-center" onClick={openMetamaskWalletConnect}>Connect Metamask Wallet</button>
         )}
         {metamaskWallet != null && (
           <Wallet

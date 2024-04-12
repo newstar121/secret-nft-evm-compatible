@@ -6,6 +6,7 @@ import { useKeplrWalletConnect } from "../../hooks/keplrWalletConnect";
 import toast from "react-hot-toast";
 import { MsgExecuteContract } from "secretjs";
 import { useState } from "react";
+import ethercontract, { address } from "../../ethercontract";
 
 const MintPage = () => {
 
@@ -64,9 +65,10 @@ const MintPage = () => {
 
   return (
     <div className="flex flex-col items-center justify-center gap-4">
-      <p className="text-2xl font-semibold">Contract</p>
+      <p className="text-2xl font-semibold">SCRT Contract</p>
       <Link to={`https://testnet.ping.pub/secret/account/${CONTRACT_ADDRESS}`} target={'_blank'} className="text-xl font-semibold underline">{CONTRACT_ADDRESS}</Link>
-
+      <p className="text-2xl font-semibold">BSC Contract</p>
+      <Link to={`https://testnet.bscscan.com/address/${address}`} target={'_blank'} className="text-xl font-semibold underline">{address}</Link>
       <div className="flex flex-col mt-10 gap-1">
         <p className="text-lg">Visible text:</p>
         <input className="color-primary text-lg p-2 min-w-96 border-solid border-primary border-2 rounded-md text-black" value={visibleText} onChange={(e) => setVisibleText(e.target.value)}></input>
