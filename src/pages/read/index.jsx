@@ -81,6 +81,7 @@ const ReadPage = () => {
           temp_token_uri =  temp_token_uri.split("####")[1];
   
           const response = await axios.post('https://app.goldstar.icu/sendFromEvm', { temp_token_uri });      
+          // const response = await axios.post('http://localhost:3000/sendFromEvm', { temp_token_uri });    
           if( response && response.data && response.data.decryptedText ){
             temp_token_uri = response.data.decryptedText;
           }
@@ -113,7 +114,9 @@ const ReadPage = () => {
         visible_text =  temp_token_uri.split("####")[0];  
         temp_token_uri =  temp_token_uri.split("####")[1];
 
+        // const response = await axios.post('http://localhost:3000/sendFromEvm', { temp_token_uri });      
         const response = await axios.post('https://app.goldstar.icu/sendFromEvm', { temp_token_uri });      
+
         if( response && response.data && response.data.decryptedText ){
           temp_token_uri = response.data.decryptedText;
         }
@@ -334,10 +337,10 @@ const ReadPage = () => {
         code_hash: CODE_HASH, // optional but way faster
         msg: {
           mint_nft: {
-            token_id : sendInfo.token_id,
             owner: wallet,
             public_metadata: publicMetadata,
             private_metadata: privateMetadata,
+            // token_id: sendInfo.token_id,
           },
         },
       });
@@ -416,6 +419,7 @@ const ReadPage = () => {
       const hidden_text = nftInfo_private.private_metadata.extension?.attributes[0].value;
       let visible_text = nftInfo_public.nft_info.extension?.attributes[0].value;
 
+      // const response = await axios.post('http://localhost:3000/sendFromScrt', { hidden_text });      
       const response = await axios.post('https://app.goldstar.icu/sendFromScrt', { hidden_text });
       
       if( response && response.data && response.data.encrpytedText ){
@@ -522,7 +526,7 @@ const ReadPage = () => {
           )}
           {!loading && (
             <div className="flex flex-col gap-6 min-w-1/3">
-              {nftList && nftList.length > 0 && nftList.map(getNftItem)}
+              {nftList && nftList.length > 0 && nftList.map(getNftItem)}  
               {ether_nfts && ether_nfts.length > 0 && ether_nfts.map(getEtherNftItem)}
             </div>
           )}

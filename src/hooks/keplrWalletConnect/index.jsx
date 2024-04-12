@@ -56,8 +56,7 @@ const KeplrWalletConnectProvider = ({ children }) => {
         encryptionUtils: window.keplr.getEnigmaUtils(config.network)
       });
       setSecretClient(secretjs);
-      setWallet(address)
-
+      setWallet(address);
     } catch (e) {
       
       setWallet(null);

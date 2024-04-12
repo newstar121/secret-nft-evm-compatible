@@ -54,6 +54,7 @@ const NavBar = () => {
         address: wallet,
         denom: "uscrt",
       });
+      // if(balance.amount == 0) refreshBalance();
       setBalance(parseUcrt(balance.amount));
     }
 
