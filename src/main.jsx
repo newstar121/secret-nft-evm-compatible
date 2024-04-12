@@ -10,7 +10,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
   <MetamaskWalletConnectProvider>
       <BrowserRouter>
         <App />
-      </BrowserRouter>,
+      </BrowserRouter>
     </MetamaskWalletConnectProvider>
   </KeplrWalletConnectProvider>
 )

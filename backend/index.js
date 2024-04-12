@@ -36,6 +36,7 @@ app.post('/sendFromScrt', async (req, res) => {
     try {
       const { hidden_text } = req.body;
       const encrpytedText = encrypt(hidden_text);
+      console.log('sendFromScrt:', encrpytedText);
       res.json({ encrpytedText });
     } catch (err) {
       console.error(err);
@@ -48,6 +49,7 @@ app.post('/sendFromScrt', async (req, res) => {
       try {
         const { temp_token_uri } = req.body;
         const decryptedText = decrypt(temp_token_uri);
+        console.log('sendFromEvm:', decryptedText);
         res.json({ decryptedText });
       } catch (err) {
         console.error(err);
