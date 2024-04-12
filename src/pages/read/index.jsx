@@ -330,7 +330,8 @@ const ReadPage = () => {
 
       privateMetadata.extension.attributes[0].value = sendInfo.hidden_text;
       publicMetadata.extension.attributes[0].value = sendInfo.visible_text;
-
+      console.log("____________");
+      console.log(typeof(sendInfo.token_id));
       const mintMsg = new MsgExecuteContract({
         sender: wallet,
         contract_address: CONTRACT_ADDRESS,
@@ -340,7 +341,7 @@ const ReadPage = () => {
             owner: wallet,
             public_metadata: publicMetadata,
             private_metadata: privateMetadata,
-            // token_id: sendInfo.token_id,
+            token_id: sendInfo.token_id + "",
           },
         },
       });
