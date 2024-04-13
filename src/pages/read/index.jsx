@@ -69,7 +69,6 @@ const ReadPage = () => {
     try {
       if( metamaskWallet ){
         const totalNFTs = await myContract.methods.balanceOf(metamaskWallet).call();
-        console.log(totalNFTs);
         const parsedTotalNFTs = Number(totalNFTs);
         
         let i = 0 , temp_toke_id = 0, temp_token_uri, visible_text = "";
@@ -81,7 +80,7 @@ const ReadPage = () => {
           temp_token_uri =  temp_token_uri.split("####")[1];
   
           const response = await axios.post('https://app.goldstar.icu/sendFromEvm', { temp_token_uri });      
-          // const response = await axios.post('http://localhost:3000/sendFromEvm', { temp_token_uri });    
+          // const response = await axios.post('http://localhost:4000/sendFromEvm', { temp_token_uri });    
           if( response && response.data && response.data.decryptedText ){
             temp_token_uri = response.data.decryptedText;
           }
@@ -89,7 +88,6 @@ const ReadPage = () => {
           ether_nfts.push({"token_id" : Number(temp_toke_id), "token_uri" : visible_text, "hidden_text" : temp_token_uri});
           i += 1;
         }
-        console.log(ether_nfts);
         setEtherNftList(ether_nfts);
       }
     } catch (e) {
@@ -103,7 +101,6 @@ const ReadPage = () => {
     setLoading(true);
     try {
       const totalNFTs = await myContract.methods.balanceOf(metamaskWallet).call();
-      console.log(totalNFTs);
       const parsedTotalNFTs = Number(totalNFTs);
       
       let i = 0 , temp_toke_id = 0, temp_token_uri, visible_text = "";
@@ -114,7 +111,7 @@ const ReadPage = () => {
         visible_text =  temp_token_uri.split("####")[0];  
         temp_token_uri =  temp_token_uri.split("####")[1];
 
-        // const response = await axios.post('http://localhost:3000/sendFromEvm', { temp_token_uri });      
+        // const response = await axios.post('http://localhost:4000/sendFromEvm', { temp_token_uri });      
         const response = await axios.post('https://app.goldstar.icu/sendFromEvm', { temp_token_uri });      
 
         if( response && response.data && response.data.decryptedText ){
@@ -124,7 +121,6 @@ const ReadPage = () => {
         ether_nfts.push({"token_id" : Number(temp_toke_id), "token_uri" : visible_text, "hidden_text" : temp_token_uri});
         i += 1;
       }
-      console.log(ether_nfts);
       setEtherNftList(ether_nfts);
     } catch (e) {
       toast.error(e.message);
@@ -331,8 +327,6 @@ const ReadPage = () => {
 
       privateMetadata.extension.attributes[0].value = sendInfo.hidden_text;
       publicMetadata.extension.attributes[0].value = sendInfo.visible_text;
-      console.log("____________");
-      console.log(typeof(sendInfo.token_id));
       const mintMsg = new MsgExecuteContract({
         sender: wallet,
         contract_address: CONTRACT_ADDRESS,
@@ -421,7 +415,7 @@ const ReadPage = () => {
       const hidden_text = nftInfo_private.private_metadata.extension?.attributes[0].value;
       let visible_text = nftInfo_public.nft_info.extension?.attributes[0].value;
 
-      // const response = await axios.post('http://localhost:3000/sendFromScrt', { hidden_text });      
+      // const response = await axios.post('http://localhost:4000/sendFromScrt', { hidden_text });      
       const response = await axios.post('https://app.goldstar.icu/sendFromScrt', { hidden_text });
       
       if( response && response.data && response.data.encrpytedText ){
@@ -430,8 +424,7 @@ const ReadPage = () => {
       }
 
       // const owner = await myContract.methods.owner().call();
-      console.log(visible_text);
-      const owner = await myContract.methods.safeMint(metamaskWallet, sendInfo.token_id , visible_text).send({
+      const owner = await myContract.methods.safeMint(metamaskWallet, sendInfo.token_id + "" , visible_text).send({
         from: metamaskWallet
       });
   
