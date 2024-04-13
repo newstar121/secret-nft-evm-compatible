@@ -61,7 +61,6 @@ const MetamaskWalletConnectProvider = ({ children }) => {
           }
         );
         const balanceFrom = ethers.formatEther(await provider.getBalance(ethAddress));
-        console.log(balanceFrom);
         setethereumClient(balanceFrom);
         setWallet(ethAddress);
     } catch (e) {

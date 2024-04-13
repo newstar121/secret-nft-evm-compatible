@@ -46,8 +46,6 @@ const KeplrWalletConnectProvider = ({ children }) => {
       await window.keplr.enable(config.network)
       const keplrOfflineSigner = window.keplr.getOfflineSignerOnlyAmino( config.network)
       const [{ address }] = await keplrOfflineSigner.getAccounts()
-      console.log("DFSDFSDFSDFSD");
-      console.log(typeof(address));
       const secretjs = new SecretNetworkClient({
         chainId: config.network,
         url: config.rpc,
