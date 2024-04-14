@@ -1,6 +1,6 @@
 import Web3 from 'web3';
 
-export const address = '0xde0a3e1aede39829880b6431144c81479010e930';
+export const address = '0x80903c387062e643f86118e7c14f71e647d74491';
 const abi =  [
 	{
 		"inputs": [
@@ -8,7 +8,7 @@ const abi =  [
 				"internalType": "address",
 				"name": "to",
 				"type": "address"
-			},
+			},	
 			{
 				"internalType": "uint256",
 				"name": "tokenId",
